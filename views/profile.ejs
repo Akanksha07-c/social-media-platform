@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/stylesheet/output.css">
+
+    <title>Profile</title>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+    <%- include("partials/navbar") %>
+
+        <main class="max-w-3xl mx-auto px-4 py-6">
+
+            <!-- Profile -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+
+                <div class="flex items-center gap-5">
+
+                    <img src="<%= user.profilepic %>" alt="Profile picture"
+                        class="w-28 h-28 rounded-full object-cover border-2 border-gray-200">
+
+                    <div>
+                        <h3 class="text-2xl sm:text-3xl font-bold text-gray-800">
+                            Hello, <%= user.username %>
+                        </h3>
+
+                        <a href="/profile/upload"
+                            class="inline-block mt-3 text-blue-600 font-medium hover:text-blue-700 transition">
+                            Change Profile Picture
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Create Post -->
+            <h2 class="text-xl font-semibold text-gray-800 mt-8 mb-4">
+                Create a New Post
+            </h2>
+
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+
+                <form action="/post" method="post" enctype="multipart/form-data">
+
+                    <textarea id="postContent" name="content" placeholder="Write something..." rows="4"
+                        class="w-full border rounded-lg p-3"></textarea>
+
+                    <input type="file" name="image" accept="image/*"
+                        class="w-full mt-3 text-sm text-gray-600 file:bg-blue-500">
+
+                    <div class="flex flex-wrap gap-3 mt-3">
+
+                        <button type="button" id="grammarBtn"
+                            class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                            ✨ Improve Grammar
+                        </button>
+
+                        <button type="submit"
+                            class="bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-700 transition">
+                            Post
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+
+            <!-- Your Posts -->
+            <h2 class="text-2xl font-bold text-gray-800 mt-10 mb-4">
+                Your Posts
+            </h2>
+
+            <% user.posts.slice().reverse().forEach((post)=> { %>
+
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 mb-5">
+
+                    <h3 class="text-lg font-semibold text-blue-600 mb-3">
+                        <%= user.username %>
+                    </h3>
+
+                    <p class="text-gray-700 leading-relaxed">
+                        <%= post.content %>
+                    </p>
+
+                    <p class="text-sm text-gray-500 mt-2">
+                        Posted <%= post.createdAt.toLocaleString() %>
+                    </p>
+
+                    <% if(post.image) { %>
+
+                        <img src="<%= post.image %>" alt="Post image"
+                            class="w-full max-w-md h-auto object-cover rounded-xl mt-4">
+
+                        <% } %>
+
+                            <p class="text-sm text-gray-500 mt-4">
+                                <%= post.likes.length %> Likes
+                            </p>
+
+                            <div class="flex items-center gap-4 mt-4">
+
+                                <a href="/edit/<%= post._id %>"
+                                    class="text-blue-600 font-medium hover:text-blue-700 transition">
+                                    Edit
+                                </a>
+
+                                <form action="/delete/<%= post._id %>" method="post">
+
+                                    <button type="submit"
+                                        class="text-red-500 font-medium hover:text-red-600 transition">
+                                        Delete
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                </div>
+
+                <% }) %>
+
+        </main>
+        <script src="/javascript/grammar.js"></script>
+</body>
+
+</html>

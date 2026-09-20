@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/stylesheet/output.css">
+    <title>User Profile</title>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+    <%- include("partials/navbar") %>
+
+        <main class="max-w-3xl mx-auto px-4 py-6">
+
+            <!-- User Profile -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+
+                <div class="flex items-center gap-5">
+
+                    <img src="<%= profileuser.profilepic %>" alt="Profile picture"
+                        class="w-28 h-28 rounded-full object-cover border-2 border-gray-200">
+
+                    <div>
+
+                        <h2 class="text-2xl sm:text-3xl font-bold text-gray-800">
+                            <%= profileuser.username %>
+                        </h2>
+
+                        <div class="flex gap-5 mt-3 text-sm text-gray-600">
+
+                            <p>
+                                <span class="font-semibold text-gray-800">
+                                    <%= profileuser.following.length %>
+                                </span>
+                                Following
+                            </p>
+
+                            <p>
+                                <span class="font-semibold text-gray-800">
+                                    <%= profileuser.followers.length %>
+                                </span>
+                                Followers
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Follow / Unfollow -->
+                <% if(isFollowing) { %>
+
+                    <form action="/user/<%= profileuser._id %>/unfollow" method="post" class="mt-5">
+
+                        <button type="submit"
+                            class="bg-gray-200 text-gray-700 px-5 py-2 rounded-lg font-semibold hover:bg-gray-300 transition">
+                            Unfollow
+                        </button>
+
+                    </form>
+
+                    <% } else { %>
+
+                        <form action="/user/<%= profileuser._id %>/follow" method="post" class="mt-5">
+
+                            <button type="submit"
+                                class="bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-700 transition">
+                                Follow
+                            </button>
+
+                        </form>
+
+                        <% } %>
+
+            </div>
+
+
+            <!-- Posts -->
+            <% if (isFollowing) { %>
+
+                <h2 class="text-2xl font-bold text-gray-800 mt-10 mb-4">
+                    <%= profileuser.username %>'s Posts
+                </h2>
+
+                <% profileuser.posts.forEach((post)=> { %>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 mb-5">
+
+                        <p class="text-gray-700 leading-relaxed">
+                            <%= post.content %>
+                        </p>
+
+                        <p class="text-sm text-gray-500 mt-2">
+                            Posted <%= post.createdAt.toLocaleString() %>
+                        </p>
+
+                        <% if (post.image) { %>
+
+                            <img src="<%= post.image %>" alt="Post image"
+                                class="w-full max-w-md h-auto object-cover rounded-xl mt-4">
+
+                            <% } %>
+
+                                <p class="text-sm text-gray-500 mt-4">
+                                    <%= post.likes.length %> Likes
+                                </p>
+
+                    </div>
+
+                    <% }) %>
+
+                        <% } else { %>
+
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 mt-8">
+
+                                <p class="text-gray-600">
+                                    Follow <%= profileuser.username %> to see their posts.
+                                </p>
+
+                            </div>
+
+                            <% } %>
+
+        </main>
+
+</body>
+
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <link rel="stylesheet" href="/stylesheet/output.css">
+
+    <title>Edit Post</title>
+
+
+</head>
+
+<body class="min-h-screen bg-gray-100 flex items-center justify-center px-4 py-8">
+
+    <div class="w-full max-w-2xl bg-white rounded-2xl shadow-lg p-6 sm:p-8">
+        <div class="flex items-center justify-between mb-6">
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">
+                Edit Post
+            </h1>
+
+            <a href="/profile" class="text-red-600 font-semibold hover:underline">
+                Profile
+            </a>
+
+        </div>
+
+        <p class="text-gray-500 mb-4">
+            You can edit your post here.
+        </p>
+
+        <form action="/edit/<%= post._id %>" method="post" class="flex flex-col gap-4">
+
+            <textarea name="content" placeholder="What's on your mind?" rows="8"
+                class="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none resize-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
+                <%= post.content %></textarea>
+
+            <input type="submit" value="Update Post"
+                class="w-full sm:w-auto bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold cursor-pointer hover:bg-blue-700 transition">
+        </form>
+    </div>
+
+
+</body>
+
+</html>

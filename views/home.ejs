@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/stylesheet/output.css">
+
+    <title>Home</title>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+    <%- include("partials/navbar") %>
+
+        <main class="max-w-3xl mx-auto px-4 py-6">
+
+            <h3 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-6">
+                Hii! <%= user.username %>
+            </h3>
+
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                Home Feed
+            </h2>
+
+            <% posts.forEach((post)=> { %>
+
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 mb-5">
+
+                    <h3 class="mb-2">
+
+                        <a href="/user/<%= post.user._id %>"
+                            class="text-lg font-semibold text-blue-600 hover:text-blue-700">
+                            <%= post.user.username %>
+                        </a>
+
+                    </h3>
+
+                    <p class="text-gray-700 leading-relaxed">
+                        <%= post.content %>
+                    </p>
+
+
+                    <p class="text-sm text-gray-500 mt-2">
+                        Posted <%= post.createdAt.toLocaleString() %>
+                    </p>
+
+                    <% if (post.image) { %>
+
+                        <img src="<%= post.image %>" alt="Post image"
+                            class="w-full max-w-md h-auto object-cover rounded-xl mt-4">
+
+                        <% } %>
+
+                            <% let isLiked=post.likes.some(function(id) { return id.toString()===user._id.toString();
+                                }); %>
+
+                                <div class="flex items-center gap-4 mt-4">
+
+                                    <form action="/like/<%= post._id %>" method="POST">
+                                        <button type="submit"
+                                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                                            <% if (isLiked) { %>
+                                                Unlike
+                                                <% } else { %>
+                                                    Like
+                                                    <% } %>
+
+                                        </button>
+                                    </form>
+
+                                    <p class="text-sm text-gray-500">
+                                        <%= post.likes.length %> Likes
+                                    </p>
+
+                                </div>
+
+
+                                <button type="button"
+                                    class="comment-btn mt-3 text-blue-600 font-medium hover:text-blue-700 transition"
+                                    data-post-id="<%= post._id %>">
+                                    Comments
+                                </button>
+
+                                <div id="comments-<%= post._id %>" style="display: none;" class="mt-3">
+
+                                    <%- include("partials/comments", { post: post }) %>
+
+                                </div>
+
+                </div>
+
+                <% }) %>
+
+
+                    <div class="flex items-center justify-center gap-4 mt-8 mb-6">
+
+                        <% if(page> 1) { %>
+
+                            <a href="/home?page=<%= page-1 %>"
+                                class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-100 transition">
+                                Previous
+                            </a>
+
+                            <% } %>
+
+
+                                <span class="text-sm font-medium text-gray-600">
+                                    Page <%= page %> of <%= totalPages %>
+                                </span>
+
+
+                                <% if(page < totalPages) { %>
+
+                                    <a href="/home?page=<%= page + 1 %>"
+                                        class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition">
+                                        Next
+                                    </a>
+
+                                    <% } %>
+
+                    </div>
+
+        </main>
+
+        <script src="/javascript/comments.js"></script>
+
+</body>
+
+</html>
