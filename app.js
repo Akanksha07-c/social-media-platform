@@ -11,6 +11,7 @@ const mongoose = require('mongoose');
 const path = require('path');
 const upload = require("./config/multerConfig");
 const uploadToCloudinary = require("./utils/cloudinaryUpload.js");
+const cloudinary = require("./config/cloudinaryConfig");
 const asyncHandler = require("./utils/asyncHandler");
 
 
@@ -123,6 +124,21 @@ app.get('/profile/upload', isLoggedIn, asyncHandler(async (req, res) => {
     res.render('image');
 }));
 
+app.post('/profile/remove-picture', isLoggedIn, asyncHandler(async (req, res) => {
+    const user = await userModel.findOne({ email: req.user.email });
+
+       if (user.profilepicPublicId) {
+        await cloudinary.uploader.destroy(user.profilepicPublicId);
+    }
+
+    user.profilepic = undefined;
+    user.profilepicPublicId = undefined;
+
+    await user.save();
+
+    res.redirect('/profile');
+}));
+
 app.post('/upload', isLoggedIn, upload.single("image"), asyncHandler(async (req, res) => {
     let user = await userModel.findOne({ email: req.user.email });
 
@@ -134,6 +150,8 @@ app.post('/upload', isLoggedIn, upload.single("image"), asyncHandler(async (req,
         "social-media/profile"
     );
     user.profilepic = result.secure_url;
+    user.profilepicPublicId = result.public_id;
+
     await user.save();
     res.redirect("/profile");
 }));
@@ -186,9 +204,11 @@ app.get('/home', isLoggedIn, asyncHandler(async (req, res) => {
 
 app.post('/like/:id', isLoggedIn, asyncHandler(async (req, res) => {
     let post = await postModel.findById(req.params.id);
+
     if (!post) {
         return res.status(404).send("Post not found");
     }
+
     if (post.likes.some(id => id.equals(req.user.userid))) {
         post.likes = post.likes.filter(id => !id.equals(req.user.userid));
     } else {
@@ -196,9 +216,11 @@ app.post('/like/:id', isLoggedIn, asyncHandler(async (req, res) => {
     }
 
     await post.save();
-    res.redirect('/home');
-}));
 
+    const page = req.body.page || 1;
+
+    res.redirect(`/home?page=${page}`);
+}));
 
 app.get('/edit/:id', isLoggedIn, asyncHandler(async (req, res) => {
     let post = await postModel.findById(req.params.id);
@@ -289,7 +311,10 @@ app.post('/comment/:postId', isLoggedIn, asyncHandler(async (req, res) => {
 
     const post = await postModel.findById(req.params.postId);
 
-    if (!post) { return res.status(404).send("Post not found") };
+    if (!post) { 
+        return res.status(404).send("Post not found"); 
+    }
+
     if (!content || !content.trim()) {
         return res.status(400).send("content cannot be empty");
     }
@@ -301,7 +326,28 @@ app.post('/comment/:postId', isLoggedIn, asyncHandler(async (req, res) => {
         post: post._id,
         content: content
     });
-    res.redirect('/home');
+
+    const page = req.body.page || 1;
+
+    res.redirect(`/home?page=${page}`);
+}));
+
+app.post('/delete-comment/:id', isLoggedIn, asyncHandler(async (req, res) => {
+    const comment = await commentModel.findById(req.params.id);
+
+    if (!comment) {
+        return res.status(404).send("Comment not found");
+    }
+
+    if (!comment.user.equals(req.user.userid)) {
+        return res.status(403).send("Unauthorized");
+    }
+
+    await commentModel.findByIdAndDelete(req.params.id);
+
+    const page = req.body.page || 1;
+
+    res.redirect(`/home?page=${page}`);
 }));
 
 
@@ -321,17 +367,10 @@ app.post('/ai/grammar', isLoggedIn, asyncHandler(async (req, res) => {
         });
     }
 
-    const response = await fetch(
-        "https://api.languagetool.org/v2/check",
-        {
+    const response = await fetch( "https://api.languagetool.org/v2/check", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            },
-            body: new URLSearchParams({
-                text: content,
-                language: "en-US"
-            })
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams({ text: content, language: "en-US" })
         }
     );
 

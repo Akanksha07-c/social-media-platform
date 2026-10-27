@@ -33,6 +33,12 @@
                             class="inline-block mt-3 text-blue-600 font-medium hover:text-blue-700 transition">
                             Change Profile Picture
                         </a>
+                        <form action="/profile/remove-picture" method="POST" class="mt-2">
+                            <button type="submit" class="text-gray-600 font-medium hover:text-gray-900 transition">
+                                Remove Profile Picture
+                            </button>
+                        </form>
+
                     </div>
 
                 </div>
@@ -52,8 +58,12 @@
                     <textarea id="postContent" name="content" placeholder="Write something..." rows="4"
                         class="w-full border rounded-lg p-3"></textarea>
 
-                    <input type="file" name="image" accept="image/*"
-                        class="w-full mt-3 text-sm text-gray-600 file:bg-blue-500">
+                    <label for="postImage"
+                        class="mt-3 inline-block text-blue-600 font-medium cursor-pointer hover:text-blue-800 hover:underline transition">
+                        Add Image
+                    </label>
+
+                    <input type="file" id="postImage" name="image" accept="image/*" class="hidden">
 
                     <div class="flex flex-wrap gap-3 mt-3">
 
@@ -98,8 +108,7 @@
                     <% if(post.image) { %>
 
                         <img src="<%= post.image %>" alt="Post image"
-                            class="w-full max-w-md h-auto object-cover rounded-xl mt-4">
-
+                            class="w-full max-w-md h-80 object-cover rounded-xl mt-4">
                         <% } %>
 
                             <p class="text-sm text-gray-500 mt-4">

@@ -34,15 +34,23 @@
 
         <form action="/edit/<%= post._id %>" method="post" class="flex flex-col gap-4">
 
-            <textarea name="content" placeholder="What's on your mind?" rows="8"
-                class="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none resize-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
-                <%= post.content %></textarea>
+            <textarea id="postContent" name="content" placeholder="What's on your mind?" rows="8"
+                class="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none resize-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"><%= post.content %></textarea>
 
-            <input type="submit" value="Update Post"
-                class="w-full sm:w-auto bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold cursor-pointer hover:bg-blue-700 transition">
+            <div class="flex flex-wrap gap-3">
+                <button type="button" id="grammarBtn"
+                    class="grammar-button text-whiterun dev
+                     px-5 py-2 rounded-lg font-semibold transition">
+                    ✨ Improve Grammar
+                </button>
+
+                <input type="submit" value="Update Post"
+                    class="w-full sm:w-auto bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold cursor-pointer hover:bg-blue-700 transition">
+            </div>
         </form>
     </div>
 
+    <script src="/javascript/grammar.js"></script>
 
 </body>
 

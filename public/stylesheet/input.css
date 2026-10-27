@@ -16,3 +16,12 @@ input[type="file"]::file-selector-button:hover {
     background-color: #2563eb;
 }
 
+
+.grammar-button {
+    background-color: #9333ea;
+}
+
+.grammar-button:hover {
+    background-color: #7e22ce;
+}
+

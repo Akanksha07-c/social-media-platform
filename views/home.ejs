@@ -30,8 +30,8 @@
 
                     <h3 class="mb-2">
 
-                        <a href="/user/<%= post.user._id %>"
-                            class="text-lg font-semibold text-blue-600 hover:text-blue-700">
+                        <a href="/user/<%= post.user._id %>" title="View profile"
+                            class="text-lg font-semibold text-blue-600 hover:text-blue-800 hover:underline cursor-pointer transition">
                             <%= post.user.username %>
                         </a>
 
@@ -49,7 +49,7 @@
                     <% if (post.image) { %>
 
                         <img src="<%= post.image %>" alt="Post image"
-                            class="w-full max-w-md h-auto object-cover rounded-xl mt-4">
+                            class="w-full max-w-md h-80 object-cover rounded-xl mt-4">
 
                         <% } %>
 
@@ -59,6 +59,7 @@
                                 <div class="flex items-center gap-4 mt-4">
 
                                     <form action="/like/<%= post._id %>" method="POST">
+                                          <input type="hidden" name="page" value="<%= page %>">
                                         <button type="submit"
                                             class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
                                             <% if (isLiked) { %>
@@ -85,7 +86,7 @@
 
                                 <div id="comments-<%= post._id %>" style="display: none;" class="mt-3">
 
-                                    <%- include("partials/comments", { post: post }) %>
+                                    <%- include("partials/comments", { post: post, page: page }) %>
 
                                 </div>
 
@@ -124,6 +125,10 @@
 
         </main>
 
+       <script>
+    const currentUserId = "<%= user._id %>";
+    const currentPage = "<%= page %>";
+</script>
         <script src="/javascript/comments.js"></script>
 
 </body>

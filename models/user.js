@@ -14,6 +14,9 @@ const userSchema = mongoose.Schema({
         type: String,
         default: "https://res.cloudinary.com/oilcrwsw/image/upload/v1789485806/user.png"
     },
+    profilepicPublicId: {
+    type: String
+    },
     followers: [
         {
             type: mongoose.Schema.Types.ObjectId,
